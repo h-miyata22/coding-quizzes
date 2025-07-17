@@ -32,7 +32,6 @@ class MessageQueue
       return false
     end
 
-    # 重複チェック
     existing = @subscribers[topic_name].find { |s| s[:name] == subscriber_name }
     if existing
       puts "Subscriber already exists: #{subscriber_name}"
@@ -57,7 +56,6 @@ class MessageQueue
       return nil
     end
 
-    # メッセージID生成
     @message_id += 1
 
     message_data = {
@@ -70,20 +68,16 @@ class MessageQueue
       retry_count: 0
     }
 
-    # メッセージ保存
     @messages[topic_name] << message_data
     @topics[topic_name][:message_count] += 1
 
-    # 古いメッセージの削除
     retention = @topics[topic_name][:retention_period]
     @messages[topic_name].delete_if do |msg|
       (Time.now - msg[:published_at]) > retention
     end
 
-    # 購読者への配信
     delivered_count = 0
     @subscribers[topic_name].each do |subscriber|
-      # フィルタチェック
       if subscriber[:filter]
         matched = true
         subscriber[:filter].each do |key, value|
@@ -95,9 +89,7 @@ class MessageQueue
         next unless matched
       end
 
-      # メッセージ配信
       begin
-        # 優先度順に処理
         if options[:async]
           Thread.new do
             sleep(0.1 * (10 - message_data[:priority]))
@@ -112,18 +104,15 @@ class MessageQueue
       rescue StandardError => e
         subscriber[:error_count] += 1
 
-        # リトライ処理
         if message_data[:retry_count] < @topics[topic_name][:max_retries]
           message_data[:retry_count] += 1
           message_data[:last_error] = e.message
 
-          # リトライキューに追加
           Thread.new do
             sleep(message_data[:retry_count] * 2)
             publish(topic_name, message, options)
           end
         else
-          # Dead Letter Queue
           @failed_messages << {
             message: message_data,
             subscriber: subscriber[:name],
@@ -145,7 +134,6 @@ class MessageQueue
     subscriber = @subscribers[topic_name].find { |s| s[:name] == subscriber_name }
     return [] unless subscriber
 
-    # フィルタ適用してメッセージ取得
     filtered_messages = []
     @messages[topic_name].each do |msg|
       if subscriber[:filter]
@@ -162,7 +150,6 @@ class MessageQueue
       filtered_messages << msg
     end
 
-    # 最新のメッセージから取得
     filtered_messages.sort_by { |m| m[:published_at] }.reverse.take(limit)
   end
 

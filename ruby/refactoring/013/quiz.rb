@@ -20,7 +20,6 @@ class NotificationService
 
         EmailSender.send(user.email, subject, body)
 
-        # ログを記録
         log = NotificationLog.new
         log.user_id = user_id
         log.type = 'email'
@@ -42,7 +41,6 @@ class NotificationService
 
         SmsSender.send(user.phone, message)
 
-        # ログを記録
         log = NotificationLog.new
         log.user_id = user_id
         log.type = 'sms'
@@ -68,7 +66,6 @@ class NotificationService
 
         PushNotifier.send(user.device_token, title, message)
 
-        # ログを記録
         log = NotificationLog.new
         log.user_id = user_id
         log.type = 'push'

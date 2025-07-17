@@ -13,7 +13,6 @@ class MultimediaDevice
     @bluetooth_connected = false
   end
 
-  # 電源管理
   def power_on
     @is_powered = true
     puts "#{@name} powered on"
@@ -28,7 +27,6 @@ class MultimediaDevice
     @is_powered
   end
 
-  # 音量制御
   def set_volume(level)
     @volume = level
     puts "#{@name} volume set to #{level}"
@@ -49,7 +47,6 @@ class MultimediaDevice
     puts "#{@name} unmuted"
   end
 
-  # 画面制御（テレビ、モニター用）
   def set_brightness(level)
     if @type == 'tv' || @type == 'monitor'
       @brightness = level
@@ -77,7 +74,6 @@ class MultimediaDevice
     end
   end
 
-  # チャンネル制御（テレビ用）
   def set_channel(channel)
     if @type == 'tv'
       @channel = channel
@@ -114,7 +110,6 @@ class MultimediaDevice
     end
   end
 
-  # メディア再生（メディアプレイヤー、スピーカー用）
   def play(media_file = nil)
     if @type == 'media_player' || @type == 'speaker'
       @media_file = media_file if media_file
@@ -158,7 +153,6 @@ class MultimediaDevice
     end
   end
 
-  # ネットワーク接続（スマートデバイス用）
   def connect_wifi(ssid, password)
     if @type == 'smart_tv' || @type == 'smart_speaker'
       @wifi_connected = true
@@ -211,7 +205,6 @@ class MultimediaDevice
     end
   end
 
-  # 高度な機能（スマートデバイス用）
   def install_app(app_name)
     if @type == 'smart_tv'
       puts "#{@name} installing app: #{app_name}"
@@ -236,7 +229,6 @@ class MultimediaDevice
     end
   end
 
-  # システム情報
   def get_device_info
     {
       name: @name,
@@ -252,7 +244,6 @@ class MultimediaDevice
   end
 end
 
-# クライアントコード例
 class RemoteControl
   def initialize(device)
     @device = device

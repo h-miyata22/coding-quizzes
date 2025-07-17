@@ -2,7 +2,6 @@ class PricingCalculator
   def calculate_price(product, quantity, customer)
     base_price = product.price * quantity
 
-    # カテゴリ別割引
     discount = 0
     if product.category == 'electronics'
       if quantity >= 5
@@ -22,7 +21,6 @@ class PricingCalculator
 
     price_after_category_discount = base_price * (1 - discount)
 
-    # 顧客ランク別割引
     customer_discount = 0
     if customer.rank == 'gold'
       customer_discount = 0.10
@@ -34,18 +32,13 @@ class PricingCalculator
 
     price_after_customer_discount = price_after_category_discount * (1 - customer_discount)
 
-    # 期間限定セール
     if Time.now >= Time.new(2024, 12, 1) && Time.now <= Time.new(2024, 12, 31)
-      # クリスマスセール
       price_after_customer_discount *= 0.80 if %w[electronics toys].include?(product.category)
     elsif Time.now >= Time.new(2024, 11, 24) && Time.now <= Time.new(2024, 11, 27)
-      # ブラックフライデー
       price_after_customer_discount *= 0.70
     end
 
-    # バンドル割引
     if customer.cart && customer.cart.length > 0
-      # 同じカテゴリの商品が3つ以上ある場合
       category_count = 0
       for i in 0..customer.cart.length - 1
         category_count += 1 if customer.cart[i].category == product.category
@@ -54,11 +47,9 @@ class PricingCalculator
       price_after_customer_discount *= 0.90 if category_count >= 3
     end
 
-    # 最低価格保証
-    min_price = product.cost * 1.1 # コストの10%マージン
+    min_price = product.cost * 1.1
     price_after_customer_discount = min_price if price_after_customer_discount < min_price
 
-    # 端数処理
     (price_after_customer_discount * 100).round / 100.0
   end
 end

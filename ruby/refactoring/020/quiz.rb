@@ -6,7 +6,6 @@ class InventoryManager
   end
 
   def add_product(id, name, price, warehouse_id, quantity)
-    # 商品追加
     if @products[id]
       puts 'Product already exists'
       return false
@@ -18,10 +17,8 @@ class InventoryManager
       total_quantity: 0
     }
 
-    # 倉庫確認
     @warehouses[warehouse_id] = {} unless @warehouses[warehouse_id]
 
-    # 在庫追加
     if @warehouses[warehouse_id][id]
       @warehouses[warehouse_id][id] += quantity
     else
@@ -30,7 +27,6 @@ class InventoryManager
 
     @products[id][:total_quantity] += quantity
 
-    # トランザクション記録
     @transactions << {
       type: 'ADD',
       product_id: id,
@@ -43,7 +39,6 @@ class InventoryManager
   end
 
   def transfer_stock(product_id, from_warehouse, to_warehouse, quantity)
-    # 在庫確認
     if !@warehouses[from_warehouse] || !@warehouses[from_warehouse][product_id]
       puts 'Product not found in source warehouse'
       return false
@@ -54,10 +49,8 @@ class InventoryManager
       return false
     end
 
-    # 移動先倉庫確認
     @warehouses[to_warehouse] = {} unless @warehouses[to_warehouse]
 
-    # 在庫移動
     @warehouses[from_warehouse][product_id] -= quantity
 
     if @warehouses[to_warehouse][product_id]
@@ -66,7 +59,6 @@ class InventoryManager
       @warehouses[to_warehouse][product_id] = quantity
     end
 
-    # トランザクション記録
     @transactions << {
       type: 'TRANSFER',
       product_id: product_id,
@@ -80,7 +72,6 @@ class InventoryManager
   end
 
   def sell_product(product_id, warehouse_id, quantity, customer_name)
-    # 在庫確認
     unless @products[product_id]
       puts 'Product not found'
       return nil
@@ -96,14 +87,11 @@ class InventoryManager
       return nil
     end
 
-    # 売上計算
     total_price = @products[product_id][:price] * quantity
 
-    # 在庫更新
     @warehouses[warehouse_id][product_id] -= quantity
     @products[product_id][:total_quantity] -= quantity
 
-    # トランザクション記録
     @transactions << {
       type: 'SALE',
       product_id: product_id,
@@ -125,7 +113,6 @@ class InventoryManager
     report = "INVENTORY REPORT\n"
     report += "================\n\n"
 
-    # 商品ごとの在庫
     @products.each do |id, product|
       report += "Product: #{product[:name]}\n"
       report += "  Total Quantity: #{product[:total_quantity]}\n"
@@ -140,7 +127,6 @@ class InventoryManager
       report += "\n"
     end
 
-    # 倉庫ごとの在庫
     report += "WAREHOUSE SUMMARY\n"
     report += "=================\n\n"
 

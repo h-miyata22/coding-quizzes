@@ -7,7 +7,6 @@ class SearchEngine
   end
 
   def add_document(id, title, content, tags = [])
-    # ドキュメント追加
     doc = {
       id: id,
       title: title,
@@ -16,7 +15,6 @@ class SearchEngine
       added_at: Time.now
     }
 
-    # 重複チェック
     existing = @documents.find { |d| d[:id] == id }
     if existing
       puts "Document already exists: #{id}"
@@ -25,8 +23,6 @@ class SearchEngine
 
     @documents << doc
 
-    # インデックス更新
-    # タイトルのインデックス
     words = title.downcase.split(/\W+/)
     words.each do |word|
       next if word.empty? || @stop_words.include?(word)
@@ -35,7 +31,6 @@ class SearchEngine
       @index[word] << { doc_id: id, field: 'title', score: 10 }
     end
 
-    # コンテンツのインデックス
     words = content.downcase.split(/\W+/)
     words.each do |word|
       next if word.empty? || @stop_words.include?(word)
@@ -44,7 +39,6 @@ class SearchEngine
       @index[word] << { doc_id: id, field: 'content', score: 1 }
     end
 
-    # タグのインデックス
     tags.each do |tag|
       tag_key = "tag:#{tag.downcase}"
       @index[tag_key] ||= []
@@ -55,10 +49,8 @@ class SearchEngine
   end
 
   def search(query, options = {})
-    # 検索履歴に追加
     @search_history << { query: query, timestamp: Time.now }
 
-    # クエリパース
     terms = []
     operators = []
     current_term = ''
@@ -81,12 +73,10 @@ class SearchEngine
       terms << current_term if i == query.length - 1 && !current_term.empty?
     end
 
-    # 検索実行
     results = []
 
     return [] if terms.empty?
 
-    # 各単語で検索
     term_results = []
     terms.each do |term|
       term_lower = term.downcase
@@ -98,14 +88,12 @@ class SearchEngine
       end
     end
 
-    # スコア集計
     doc_scores = {}
     term_results.each do |entry|
       doc_scores[entry[:doc_id]] ||= 0
       doc_scores[entry[:doc_id]] += entry[:score]
     end
 
-    # ドキュメント取得
     doc_scores.each do |doc_id, score|
       doc = @documents.find { |d| d[:id] == doc_id }
       next unless doc
@@ -116,7 +104,6 @@ class SearchEngine
       }
     end
 
-    # フィルタリング
     if options[:tags]
       results = results.select do |result|
         (result[:document][:tags] & options[:tags]).any?
@@ -135,25 +122,22 @@ class SearchEngine
       end
     end
 
-    # ソート
     case options[:sort_by]
     when 'date'
       results.sort_by! { |r| r[:document][:added_at] }
       results.reverse! if options[:order] == 'desc'
     when 'title'
       results.sort_by! { |r| r[:document][:title] }
-    else # score
+    else
       results.sort_by! { |r| -r[:score] }
     end
 
-    # ページング
     page = options[:page] || 1
     per_page = options[:per_page] || 10
     start_index = (page - 1) * per_page
 
     paged_results = results[start_index, per_page] || []
 
-    # ハイライト
     if options[:highlight]
       paged_results.each do |result|
         highlighted_content = result[:document][:content].dup
@@ -179,7 +163,6 @@ class SearchEngine
       suggestions << word if word.start_with?(prefix.downcase) && !word.start_with?('tag:')
     end
 
-    # 頻度順にソート
     suggestions.sort_by! { |word| -@index[word].length }
 
     suggestions.take(limit)
@@ -192,7 +175,6 @@ class SearchEngine
     puts "  Tags: #{@index.keys.select { |k| k.start_with?('tag:') }.length}"
     puts "  Search history: #{@search_history.length} queries"
 
-    # 人気の検索語
     query_counts = {}
     @search_history.each do |entry|
       query_counts[entry[:query]] ||= 0
@@ -210,7 +192,6 @@ class SearchEngine
     @index.clear
 
     @documents.each do |doc|
-      # 再度インデックスを作成
       add_document(doc[:id], doc[:title], doc[:content], doc[:tags])
     end
   end

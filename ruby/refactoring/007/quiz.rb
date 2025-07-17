@@ -12,7 +12,6 @@ class ShoppingCart
   def add_item(item)
     return false if item[:quantity] <= 0
 
-    # 同じ商品があるかチェック
     found = false
     for i in 0..@items.length - 1
       next unless @items[i][:id] == item[:id]
@@ -24,7 +23,6 @@ class ShoppingCart
 
     @items << item unless found
 
-    # 合計を再計算
     calculate_total
     true
   end
@@ -73,14 +71,11 @@ class ShoppingCart
       subtotal += (@items[i][:price] * @items[i][:quantity])
     end
 
-    # 割引適用
     discount_amount = subtotal * @discount
     after_discount = subtotal - discount_amount
 
-    # 税金計算
     tax = after_discount * @tax_rate
 
-    # 送料計算
     if @coupon_code != 'FREESHIP'
       @shipping_fee = if subtotal < 3000
                         500

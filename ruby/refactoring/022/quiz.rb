@@ -10,39 +10,31 @@ class CacheSystem
   end
 
   def get(key, options = {})
-    # 有効期限チェック
     if @creation_times[key] && (Time.now - @creation_times[key]) > @ttl
-      # 期限切れ
       @cache.delete(key)
       @access_times.delete(key)
       @creation_times.delete(key)
     end
 
-    # キャッシュヒット
     if @cache.has_key?(key)
       @hit_count += 1
       @access_times[key] = Time.now
 
-      # ログ出力
       puts "[CACHE HIT] Key: #{key}" if options[:debug]
 
       return @cache[key]
     end
 
-    # キャッシュミス
     @miss_count += 1
 
     # ログ出力
     puts "[CACHE MISS] Key: #{key}" if options[:debug]
 
-    # ブロックが与えられた場合は値を計算してキャッシュ
     return nil unless block_given?
 
     value = yield
 
-    # キャッシュサイズチェック
     if @cache.size >= @max_size
-      # LRU削除
       oldest_key = nil
       oldest_time = Time.now
 
@@ -62,7 +54,6 @@ class CacheSystem
       end
     end
 
-    # 新しい値をキャッシュ
     @cache[key] = value
     @access_times[key] = Time.now
     @creation_times[key] = Time.now
@@ -71,12 +62,10 @@ class CacheSystem
   end
 
   def set(key, value, options = {})
-    # カスタムTTL
     ttl = options[:ttl] || @ttl
 
     # キャッシュサイズチェック
     if !@cache.has_key?(key) && @cache.size >= @max_size
-      # LRU削除
       oldest_key = nil
       oldest_time = Time.now
 
@@ -98,9 +87,7 @@ class CacheSystem
     @access_times[key] = Time.now
     @creation_times[key] = Time.now
 
-    # カスタムTTLの場合は別途管理
     nil unless ttl != @ttl
-    # 本来は個別のTTLを管理する必要がある
   end
 
   def delete(key)
@@ -134,7 +121,6 @@ class CacheSystem
     puts "  Misses: #{@miss_count}"
     puts "  Hit Rate: #{hit_rate}%"
 
-    # メモリ使用量の推定
     memory_usage = 0
     @cache.each do |k, v|
       memory_usage += k.to_s.length

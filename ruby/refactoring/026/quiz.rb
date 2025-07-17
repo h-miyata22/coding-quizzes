@@ -4,7 +4,6 @@ class DynamicConfig
     @observers = []
   end
 
-  # 大量の似たようなアクセサメソッド
   def database_host
     @data['database_host']
   end
@@ -65,7 +64,6 @@ class DynamicConfig
     notify_observers('timeout', old_value, value)
   end
 
-  # 環境別設定の動的メソッド呼び出し
   def get_environment_config(env)
     case env
     when 'development'
@@ -126,27 +124,21 @@ class DynamicConfig
     }
   end
 
-  # 設定のバリデーション
   def validate_config
     errors = []
 
-    # データベースホストの検証
     errors << 'database_host is required' if @data['database_host'].nil? || @data['database_host'].empty?
 
-    # ポートの検証
     port = @data['database_port']
     if port.nil? || !port.is_a?(Integer) || port < 1 || port > 65_535
       errors << 'database_port must be an integer between 1 and 65535'
     end
 
-    # APIキーの検証
     errors << 'api_key must be at least 8 characters' if @data['api_key'].nil? || @data['api_key'].length < 8
 
-    # ログレベルの検証
     valid_levels = %w[debug info warn error]
     errors << "log_level must be one of: #{valid_levels.join(', ')}" unless valid_levels.include?(@data['log_level'])
 
-    # タイムアウトの検証
     timeout = @data['timeout']
     errors << 'timeout must be a positive integer' if timeout.nil? || !timeout.is_a?(Integer) || timeout < 1
 
@@ -163,7 +155,6 @@ class DynamicConfig
     end
   end
 
-  # 未知のメソッド呼び出しのエラーハンドリング
   def method_missing(method_name, *args)
     puts "Unknown method: #{method_name}"
     nil

@@ -1,6 +1,5 @@
 class TaxCalculator
   def calculate_tax(income, country, filing_status, year)
-    # 国別税率計算
     tax = 0
 
     if country == 'US'
@@ -55,7 +54,6 @@ class TaxCalculator
                 end
         end
       elsif year == 2022
-        # 2022年の税率表（簡略化）
         if filing_status == 'single'
           tax = if income <= 10_275
                   income * 0.10
@@ -67,7 +65,6 @@ class TaxCalculator
         end
       end
     elsif country == 'Canada'
-      # カナダの税率計算
       if year == 2023
         tax = if income <= 53_359
                 income * 0.15
@@ -82,7 +79,6 @@ class TaxCalculator
               end
       end
     elsif country == 'UK'
-      # イギリスの税率計算
       if year == 2023
         tax = if income <= 12_570
                 0
@@ -95,7 +91,6 @@ class TaxCalculator
               end
       end
     elsif country == 'Japan'
-      # 日本の税率計算
       if year == 2023
         tax = if income <= 1_950_000
                 income * 0.05
@@ -174,7 +169,7 @@ class TaxCalculator
             amount = 13_850
           end
         when 'personal_exemption'
-          amount = 0 # 2023年は個人控除なし
+          amount = 0
         end
       elsif year == 2022
         case deduction_type

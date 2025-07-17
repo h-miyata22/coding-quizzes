@@ -1,22 +1,18 @@
 class OrderProcessor
   def process_order(order)
-    # 在庫チェック
     order.items.each do |item|
       stock = StockManager.check_stock(item[:product_id])
       return { success: false, error: "Insufficient stock for #{item[:product_name]}" } if stock < item[:quantity]
     end
 
-    # 在庫を減らす
     order.items.each do |item|
       StockManager.reduce_stock(item[:product_id], item[:quantity])
     end
 
-    # 注文を保存
     order.status = 'confirmed'
     order.confirmed_at = Time.now
     order.save
 
-    # メール送信
     email_body = "Dear #{order.customer_name},\n\nYour order ##{order.id} has been confirmed.\n\nOrder details:\n"
     order.items.each do |item|
       email_body += "- #{item[:product_name]} x#{item[:quantity]} = $#{item[:price] * item[:quantity]}\n"
@@ -29,16 +25,13 @@ class OrderProcessor
       body: email_body
     )
 
-    # Slack通知
     slack_message = "New order ##{order.id} from #{order.customer_name} - Total: $#{order.total_amount}"
     SlackNotifier.notify('#sales', slack_message)
 
-    # ポイント付与
     if order.customer_id
       points = (order.total_amount * 0.01).to_i
       CustomerService.add_points(order.customer_id, points)
 
-      # ポイント付与メール
       EmailService.send(
         to: order.customer_email,
         subject: 'Points Earned!',
@@ -46,7 +39,6 @@ class OrderProcessor
       )
     end
 
-    # 分析データ更新
     Analytics.track('order_completed', {
                       order_id: order.id,
                       customer_id: order.customer_id,
@@ -54,7 +46,6 @@ class OrderProcessor
                       items_count: order.items.count
                     })
 
-    # 配送システムに登録
     ShippingService.create_shipment({
                                       order_id: order.id,
                                       address: order.shipping_address,

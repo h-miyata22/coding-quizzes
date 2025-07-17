@@ -6,7 +6,6 @@ class ConfigManager
   end
 
   def load_config(file_path, environment = 'development')
-    # ファイル読み込み
     unless File.exist?(file_path)
       puts "Config file not found: #{file_path}"
       return false
@@ -14,7 +13,6 @@ class ConfigManager
 
     content = File.read(file_path)
 
-    # YAMLパース
     begin
       data = YAML.load(content)
     rescue StandardError => e
@@ -22,10 +20,8 @@ class ConfigManager
       return false
     end
 
-    # 環境別設定の取得
     env_config = {}
 
-    # デフォルト値
     if data['default']
       data['default'].each do |key, value|
         env_config[key] = value
@@ -33,22 +29,18 @@ class ConfigManager
       end
     end
 
-    # 環境固有の値でオーバーライド
     if data[environment]
       data[environment].each do |key, value|
         env_config[key] = value
       end
     end
 
-    # 設定の検証
     env_config.each do |key, value|
-      # 必須項目チェック
       if key.end_with?('_required') && value.nil?
         puts "Required config missing: #{key}"
         return false
       end
 
-      # 型チェック
       if (key.include?('port') || key.include?('timeout')) && (!value.is_a?(Integer) || value < 0)
         puts "Invalid number for #{key}: #{value}"
         return false
@@ -67,12 +59,10 @@ class ConfigManager
       end
     end
 
-    # 環境変数による上書き
     env_config.each do |key, value|
       env_key = "APP_#{key.upcase}"
       next unless ENV[env_key]
 
-      # 型変換
       env_config[key] = if value.is_a?(Integer)
                           ENV[env_key].to_i
                         elsif [true, false].include?(value)
@@ -82,11 +72,9 @@ class ConfigManager
                         end
     end
 
-    # テンプレート変数の展開
     env_config.each do |key, value|
       next unless value.is_a?(String) && value.include?('${')
 
-      # 変数置換
       value.scan(/\${([^}]+)}/).each do |match|
         var_name = match[0]
         if env_config[var_name]
@@ -108,7 +96,6 @@ class ConfigManager
 
     value = @configs[environment][key]
 
-    # ネストされたキーのサポート
     if key.include?('.')
       parts = key.split('.')
       current = @configs[environment]
@@ -128,12 +115,10 @@ class ConfigManager
   def set(key, value, environment = 'development')
     @configs[environment] = {} unless @configs[environment]
 
-    # ネストされたキーのサポート
     if key.include?('.')
       parts = key.split('.')
       current = @configs[environment]
 
-      # 最後の要素以外を辿る
       parts[0..-2].each do |part|
         current[part] ||= {}
         current = current[part]
@@ -146,10 +131,8 @@ class ConfigManager
   end
 
   def reload
-    # 全環境の設定をリロード
     @environments.each do |env|
       if @configs[env]
-        # 設定ファイルのパスを覚えていないので再読み込みできない
         puts "Cannot reload #{env} config"
       end
     end
@@ -184,7 +167,6 @@ class ConfigManager
     @configs.each do |env, config|
       puts "Validating #{env}..."
 
-      # 循環参照チェック
       config.each do |key, value|
         if value.is_a?(String) && value.include?("${#{key}}")
           puts "Circular reference detected: #{key}"
@@ -192,7 +174,6 @@ class ConfigManager
         end
       end
 
-      # 未定義の参照チェック
       config.each do |key, value|
         next unless value.is_a?(String) && value.include?('${')
 

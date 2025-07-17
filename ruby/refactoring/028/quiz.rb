@@ -75,18 +75,15 @@ class DocumentProcessor
   def calculate_storage_size(document)
     case document[:type]
     when 'text'
-      # テキストは1文字1バイトと仮定
       document[:content].length
 
     when 'image'
-      # 画像サイズ = 幅 x 高さ x 色深度 / 8
       width = document[:width] || 0
       height = document[:height] || 0
       color_depth = document[:color_depth] || 24
       (width * height * color_depth) / 8
 
     when 'video'
-      # 動画サイズ = 幅 x 高さ x フレームレート x 継続時間 x 色深度 / 8
       width = document[:width] || 0
       height = document[:height] || 0
       frame_rate = document[:frame_rate] || 30
@@ -95,7 +92,6 @@ class DocumentProcessor
       (width * height * frame_rate * duration * color_depth) / 8
 
     when 'audio'
-      # 音声サイズ = サンプルレート x チャンネル数 x 継続時間 x ビット深度 / 8
       sample_rate = document[:sample_rate] || 44_100
       channels = document[:channels] || 2
       duration = document[:duration] || 0
@@ -103,9 +99,8 @@ class DocumentProcessor
       (sample_rate * channels * duration * bit_depth) / 8
 
     when 'pdf'
-      # PDFサイズは概算値
       page_count = document[:page_count] || 0
-      page_count * 50_000 # 1ページ約50KB
+      page_count * 50_000
 
     else
       0
@@ -115,24 +110,19 @@ class DocumentProcessor
   def generate_preview(document)
     case document[:type]
     when 'text'
-      # テキストの最初の100文字
       content = document[:content] || ''
       content.length > 100 ? content[0..100] + '...' : content
 
     when 'image'
-      # 画像のサムネイル情報
       "Image preview: #{document[:width]}x#{document[:height]} #{document[:format]}"
 
     when 'video'
-      # 動画の最初のフレーム情報
       "Video preview: #{document[:duration]}s #{document[:width]}x#{document[:height]}"
 
     when 'audio'
-      # 音声の波形情報
       "Audio preview: #{document[:duration]}s #{document[:channels]}ch"
 
     when 'pdf'
-      # PDFの最初のページ
       "PDF preview: #{document[:page_count]} pages"
 
     else

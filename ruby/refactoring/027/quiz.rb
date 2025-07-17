@@ -6,7 +6,6 @@ class BankAccount
   end
 
   def deposit(amount)
-    # 基本的なチェック
     if amount <= 0
       puts 'Invalid amount'
       return false
@@ -24,7 +23,6 @@ class BankAccount
   end
 
   def withdraw(amount)
-    # 基本的なチェック
     if amount <= 0
       puts 'Invalid amount'
       return false
@@ -47,7 +45,6 @@ class BankAccount
   end
 
   def transfer(amount, target_account)
-    # 基本的なチェック
     if amount <= 0
       puts 'Invalid amount'
       return false
@@ -63,11 +60,9 @@ class BankAccount
       return false
     end
 
-    # 資金移動
     @balance -= amount
     target_account.instance_variable_set(:@balance, target_account.instance_variable_get(:@balance) + amount)
 
-    # 履歴記録
     @transaction_history << {
       type: 'transfer_out',
       amount: amount,
@@ -88,7 +83,6 @@ class BankAccount
   end
 
   def calculate_interest(rate)
-    # 金利計算
     if rate < 0 || rate > 1
       puts 'Invalid interest rate'
       return nil
@@ -117,7 +111,6 @@ class BankAccount
   end
 
   def apply_fee(fee_amount)
-    # 手数料適用
     if fee_amount < 0
       puts 'Fee cannot be negative'
       return false
@@ -125,7 +118,6 @@ class BankAccount
 
     @balance -= fee_amount
 
-    # 残高がマイナスになった場合
     puts 'Warning: Account balance is negative' if @balance < 0
 
     @transaction_history << {
@@ -139,7 +131,6 @@ class BankAccount
   end
 
   def bulk_transactions(transactions)
-    # 一括処理
     successful = 0
     failed = 0
 
@@ -182,7 +173,6 @@ class BankAccount
     puts "Current Balance: #{@balance}"
     puts "Transaction Count: #{@transaction_history.length}"
 
-    # 統計計算
     total_deposits = 0
     total_withdrawals = 0
 

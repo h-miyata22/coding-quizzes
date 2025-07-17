@@ -3,7 +3,7 @@ class FileProcessor
     return 'Error: File not found' unless File.exist?(file_path)
 
     file_size = File.size(file_path)
-    return 'Error: File too large' if file_size > 10_485_760 # 10MB
+    return 'Error: File too large' if file_size > 10_485_760
 
     lines = []
     File.open(file_path, 'r') do |file|
@@ -14,10 +14,8 @@ class FileProcessor
 
     return 'Error: Empty file' if lines.empty?
 
-    # ヘッダー行を取得
     header = lines[0].split(',')
 
-    # データを処理
     results = []
     errors = []
 
@@ -34,7 +32,6 @@ class FileProcessor
         row[header[j]] = columns[j]
       end
 
-      # バリデーション
       if row['email'] && !row['email'].match(/\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i)
         errors << "Line #{i + 1}: Invalid email format"
         next
@@ -45,7 +42,6 @@ class FileProcessor
         next
       end
 
-      # データ変換
       row['name'] = row['name'].upcase if row['name']
 
       if row['created_at']
@@ -60,7 +56,6 @@ class FileProcessor
       results << row
     end
 
-    # 結果を返す
     {
       success: true,
       data: results,

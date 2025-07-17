@@ -18,7 +18,6 @@ class TaskQueue
       created_at: Time.now
     }
 
-    # 優先度順に挿入
     inserted = false
     for i in 0..@tasks.length - 1
       next unless @tasks[i][:priority] < priority
@@ -39,7 +38,6 @@ class TaskQueue
     while @running && @tasks.length > 0
       task = @tasks.shift
 
-      # タスク実行
       task[:status] = 'running'
       task[:started_at] = Time.now
 
@@ -48,44 +46,38 @@ class TaskQueue
 
         case task[:type]
         when 'email'
-          # メール送信
           puts "Sending email to #{task[:data][:to]}"
           raise 'Invalid email address' if task[:data][:to].nil? || task[:data][:to].empty?
 
-          sleep(1) # 送信時間のシミュレーション
+          sleep(1)
           result = 'Email sent'
 
         when 'http_request'
-          # HTTP リクエスト
           puts "Making HTTP request to #{task[:data][:url]}"
           raise 'Invalid URL' unless task[:data][:url].start_with?('http')
 
-          sleep(2) # リクエスト時間のシミュレーション
+          sleep(2)
           result = 'Response: 200 OK'
 
         when 'data_processing'
-          # データ処理
           puts "Processing data: #{task[:data][:input]}"
           raise 'No input data' if task[:data][:input].nil?
 
-          # 処理のシミュレーション
           processed = task[:data][:input].upcase
           sleep(0.5)
           result = "Processed: #{processed}"
 
         when 'report_generation'
-          # レポート生成
           puts "Generating report: #{task[:data][:report_type]}"
           raise 'Invalid report type' unless %w[daily weekly monthly].include?(task[:data][:report_type])
 
-          sleep(3) # レポート生成時間のシミュレーション
+          sleep(3)
           result = "Report generated: #{task[:data][:report_type]}_report.pdf"
 
         else
           raise "Unknown task type: #{task[:type]}"
         end
 
-        # 成功時の処理
         task[:status] = 'completed'
         task[:completed_at] = Time.now
         task[:result] = result
@@ -93,25 +85,20 @@ class TaskQueue
 
         @completed_tasks << task
 
-        # コールバック実行
         task[:data][:on_success].call(result) if task[:data][:on_success]
       rescue StandardError => e
-        # エラー処理
         task[:attempts] += 1
         task[:last_error] = e.message
         task[:failed_at] = Time.now
 
         if task[:attempts] < task[:retry_count]
-          # リトライ
           task[:status] = 'pending'
-          task[:retry_after] = Time.now + (task[:attempts] * 5) # バックオフ
+          task[:retry_after] = Time.now + (task[:attempts] * 5)
 
-          # リトライキューに戻す
           @tasks.unshift(task)
 
           puts "Task #{task[:id]} failed, retrying (#{task[:attempts]}/#{task[:retry_count]})"
         else
-          # 失敗
           task[:status] = 'failed'
           @failed_tasks << task
 
@@ -122,7 +109,6 @@ class TaskQueue
         end
       end
 
-      # レート制限
       sleep(0.1)
     end
 
@@ -145,7 +131,6 @@ class TaskQueue
   end
 
   def get_task_info(task_id)
-    # 全てのキューから検索
     task = @tasks.find { |t| t[:id] == task_id }
     task ||= @completed_tasks.find { |t| t[:id] == task_id }
     task ||= @failed_tasks.find { |t| t[:id] == task_id }

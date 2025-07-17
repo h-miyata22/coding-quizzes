@@ -18,7 +18,6 @@ class DocumentGenerator
 
       content += "\nTotal: $#{total}\n"
 
-      # PDF生成
       return generate_pdf(content) if data[:format] == 'pdf'
 
       content
@@ -40,7 +39,6 @@ class DocumentGenerator
         end
       end
 
-      # PDF生成
       return generate_pdf(content) if data[:format] == 'pdf'
 
       content
@@ -56,7 +54,6 @@ class DocumentGenerator
       content += "Sincerely,\n"
       content += "#{data[:sender_name]}\n"
 
-      # PDF生成
       return generate_pdf(content) if data[:format] == 'pdf'
 
       content
@@ -70,7 +67,6 @@ class DocumentGenerator
       content += "Date: #{data[:date]}\n"
       content += "Issued by: #{data[:issuer]}\n"
 
-      # PDF生成
       return generate_pdf(content) if data[:format] == 'pdf'
 
       content
@@ -83,7 +79,6 @@ class DocumentGenerator
   private
 
   def generate_pdf(content)
-    # PDF生成のダミー実装
     "PDF: #{content}"
   end
 end

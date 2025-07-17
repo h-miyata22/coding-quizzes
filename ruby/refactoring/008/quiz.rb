@@ -1,6 +1,5 @@
 class UserService
   def get_user_info(user_id)
-    # ユーザー情報を取得
     user_sql = "SELECT * FROM users WHERE id = #{user_id}"
     user_result = Database.execute(user_sql)
 
@@ -8,22 +7,18 @@ class UserService
 
     user = user_result[0]
 
-    # 投稿数を取得
     posts_sql = "SELECT COUNT(*) as count FROM posts WHERE user_id = #{user_id}"
     posts_result = Database.execute(posts_sql)
     posts_count = posts_result[0]['count']
 
-    # フォロワー数を取得
     followers_sql = "SELECT COUNT(*) as count FROM follows WHERE followed_id = #{user_id}"
     followers_result = Database.execute(followers_sql)
     followers_count = followers_result[0]['count']
 
-    # フォロー数を取得
     following_sql = "SELECT COUNT(*) as count FROM follows WHERE follower_id = #{user_id}"
     following_result = Database.execute(following_sql)
     following_count = following_result[0]['count']
 
-    # 最新投稿を取得
     latest_posts_sql = "SELECT * FROM posts WHERE user_id = #{user_id} ORDER BY created_at DESC LIMIT 5"
     latest_posts = Database.execute(latest_posts_sql)
 
@@ -54,7 +49,6 @@ class UserService
     for i in 0..results.length - 1
       user = results[i]
 
-      # 各ユーザーの投稿数を取得
       posts_sql = "SELECT COUNT(*) as count FROM posts WHERE user_id = #{user['id']}"
       posts_result = Database.execute(posts_sql)
       posts_count = posts_result[0]['count']

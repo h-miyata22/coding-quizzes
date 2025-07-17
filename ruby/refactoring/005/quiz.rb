@@ -28,7 +28,6 @@ class EmailNotifier
       return false
     end
 
-    # メール送信処理
     mail = {}
     mail[:to] = send_to
     mail[:from] = from
@@ -42,7 +41,6 @@ class EmailNotifier
                       'html'
                     end
 
-    # 実際の送信処理（省略）
     puts "Sending email: #{mail}"
     true
   end
