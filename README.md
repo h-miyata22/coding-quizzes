@@ -4,7 +4,7 @@
 - このリポジトリをforkする
 - 回答作成用のブランチを`answer-問題番号`のように作成する
 - 問題を解く
-  - `quiz.[rb|js]`, `quiz_code.md`(もしあれば) を読んで問題を理解する
+  - `quiz.rb`, `quiz_code.js`,`quiz_text.md`などを読んで問題を理解する
   - `my_answer.[rb|js]` を作成し、解答を実装する
     - `./ruby/refactoring`の問題はそこに書かれたコードのリファクタリングを行う
     - `./ruby/algorithms`の問題はそこに書かれたアルゴリズム問題を実装する
@@ -19,7 +19,7 @@
   - 必要なクラスやメソッドが実装されていない
 - 必要に応じて必要な実装を追加してください
 - コーディング力をつけることが目的なので極力AIは使わずに、自分でコードを書くようにしてください
-- `answer.[rb|js]`や`explanation.md`はあくまで参考であり、絶対の正解というわけではないです
+- **`answer.[rb|js]`や`explanation.md`はあくまで参考であり、絶対の正解というわけではないです**
 
 ## Ruby
 
@@ -46,16 +46,16 @@
 ## フロントエンド
 
 ### パターン問題
-- [001](./frontend/patterns/001/quiz.rb) / [002](./frontend/patterns/002/quiz.rb) / [003](./frontend/patterns/003/quiz.rb) / [004](./frontend/patterns/004/quiz.rb) / [005](./frontend/patterns/005/quiz.rb)
-- [006](./frontend/patterns/006/quiz.rb) / [007](./frontend/patterns/007/quiz.rb) / [008](./frontend/patterns/008/quiz.rb) / [009](./frontend/patterns/009/quiz.rb) / [010](./frontend/patterns/010/quiz.rb)
-- [011](./frontend/patterns/011/quiz.rb) / [012](./frontend/patterns/012/quiz.rb) / [013](./frontend/patterns/013/quiz.rb) / [014](./frontend/patterns/014/quiz.rb) / [015](./frontend/patterns/015/quiz.rb)
-- [016](./frontend/patterns/016/quiz.rb) / [017](./frontend/patterns/017/quiz.rb) / [018](./frontend/patterns/018/quiz.rb) / [019](./frontend/patterns/019/quiz.rb) / [020](./frontend/patterns/020/quiz.rb)
-- [021](./frontend/patterns/021/quiz.rb) / [022](./frontend/patterns/022/quiz.rb) / [023](./frontend/patterns/023/quiz.rb) / [024](./frontend/patterns/024/quiz.rb) / [025](./frontend/patterns/025/quiz.rb)
-- [026](./frontend/patterns/026/quiz.rb) / [027](./frontend/patterns/027/quiz.rb) / [028](./frontend/patterns/028/quiz.rb) / [029](./frontend/patterns/029/quiz.rb) / [030](./frontend/patterns/030/quiz.rb)
-- [031](./frontend/patterns/031/quiz.rb) / [032](./frontend/patterns/032/quiz.rb) / [033](./frontend/patterns/033/quiz.rb) / [034](./frontend/patterns/034/quiz.rb) / [035](./frontend/patterns/035/quiz.rb)
-- [036](./frontend/patterns/036/quiz.rb) / [037](./frontend/patterns/037/quiz.rb) / [038](./frontend/patterns/038/quiz.rb) / [039](./frontend/patterns/039/quiz.rb) / [040](./frontend/patterns/040/quiz.rb)
-- [041](./frontend/patterns/041/quiz.rb) / [042](./frontend/patterns/042/quiz.rb) / [043](./frontend/patterns/043/quiz.rb) / [044](./frontend/patterns/044/quiz.rb) / [045](./frontend/patterns/045/quiz.rb)
-- [046](./frontend/patterns/046/quiz.rb) / [047](./frontend/patterns/047/quiz.rb) / [048](./frontend/patterns/048/quiz.rb) / [049](./frontend/patterns/049/quiz.rb) / [050](./frontend/patterns/050/quiz.rb)
+- [001](./frontend/patterns/001/quiz_text.md) / [002](./frontend/patterns/002/quiz_text.md) / [003](./frontend/patterns/003/quiz_text.md) / [004](./frontend/patterns/004/quiz_text.md) / [005](./frontend/patterns/005/quiz_text.md)
+- [006](./frontend/patterns/006/quiz_text.md) / [007](./frontend/patterns/007/quiz_text.md) / [008](./frontend/patterns/008/quiz_text.md) / [009](./frontend/patterns/009/quiz_text.md) / [010](./frontend/patterns/010/quiz_text.md)
+- [011](./frontend/patterns/011/quiz_text.md) / [012](./frontend/patterns/012/quiz_text.md) / [013](./frontend/patterns/013/quiz_text.md) / [014](./frontend/patterns/014/quiz_text.md) / [015](./frontend/patterns/015/quiz_text.md)
+- [016](./frontend/patterns/016/quiz_text.md) / [017](./frontend/patterns/017/quiz_text.md) / [018](./frontend/patterns/018/quiz_text.md) / [019](./frontend/patterns/019/quiz_text.md) / [020](./frontend/patterns/020/quiz_text.md)
+- [021](./frontend/patterns/021/quiz_text.md) / [022](./frontend/patterns/022/quiz_text.md) / [023](./frontend/patterns/023/quiz_text.md) / [024](./frontend/patterns/024/quiz_text.md) / [025](./frontend/patterns/025/quiz_text.md)
+- [026](./frontend/patterns/026/quiz_text.md) / [027](./frontend/patterns/027/quiz_text.md) / [028](./frontend/patterns/028/quiz_text.md) / [029](./frontend/patterns/029/quiz_text.md) / [030](./frontend/patterns/030/quiz_text.md)
+- [031](./frontend/patterns/031/quiz_text.md) / [032](./frontend/patterns/032/quiz_text.md) / [033](./frontend/patterns/033/quiz_text.md) / [034](./frontend/patterns/034/quiz_text.md) / [035](./frontend/patterns/035/quiz_text.md)
+- [036](./frontend/patterns/036/quiz_text.md) / [037](./frontend/patterns/037/quiz_text.md) / [038](./frontend/patterns/038/quiz_text.md) / [039](./frontend/patterns/039/quiz_text.md) / [040](./frontend/patterns/040/quiz_text.md)
+- [041](./frontend/patterns/041/quiz_text.md) / [042](./frontend/patterns/042/quiz_text.md) / [043](./frontend/patterns/043/quiz_text.md) / [044](./frontend/patterns/044/quiz_text.md) / [045](./frontend/patterns/045/quiz_text.md)
+- [046](./frontend/patterns/046/quiz_text.md) / [047](./frontend/patterns/047/quiz_text.md) / [048](./frontend/patterns/048/quiz_text.md) / [049](./frontend/patterns/049/quiz_text.md) / [050](./frontend/patterns/050/quiz_text.md)
 
 ## LICENSE
 
