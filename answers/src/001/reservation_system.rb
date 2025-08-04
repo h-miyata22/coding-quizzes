@@ -1,4 +1,8 @@
 class ReservationSystem
+  TARGET_YEAR = 2024
+  HIGH_SEASON_MONTH = 8
+  GOLD_USER_TYPE = 'G'
+
   def initialize(user, room_type, date)
     @user = user
     @room_type = room_type
@@ -28,11 +32,9 @@ class ReservationSystem
   end
 
   def reservable_date?
-    target_year = 2024
-
     return false if month < 1 || month > 12 || day < 1 || day > 31
 
-    return year >= target_year
+    return year >= TARGET_YEAR
   end
 
   def room
@@ -65,11 +67,11 @@ class ReservationSystem
   def price
     base_price = room.base_price
 
-    if month == 8
+    if month == HIGH_SEASON_MONTH
       base_price *= room.aug_price_rate
     end
 
-    if user_type == 'G'
+    if user_type == GOLD_USER_TYPE
       base_price *= room.g_user_price_rate
     end
 

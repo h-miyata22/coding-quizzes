@@ -32,7 +32,7 @@ RSpec.describe ReservationSystem do
       expect(system.check_reservation).not_to eq('error')
     end
 
-    it 'returns not error if month is greater than 12' do
+    it 'returns error if month is greater than 12' do
       system = ReservationSystem.new('G123', 1, '2024-13-01')
       expect(system.check_reservation).to eq('error')
     end
