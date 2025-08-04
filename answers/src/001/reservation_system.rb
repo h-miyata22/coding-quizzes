@@ -1,38 +1,42 @@
+require 'date'
+
 class ReservationSystem
+  TARGET_YEAR = 2024
+  HIGH_SEASON_MONTH = 8
+  GOLD_USER_PREFIX = 'G'
+
   def initialize(user, room_type, date)
     @user = user
     @room_type = room_type
     @date = date
   end
 
-  attr_reader :user, :room_type, :date
-
   def check_reservation
-    return 'error' if user.nil? || room_type.nil? || date.nil? || room.nil?
-    return 'error' unless reservable_date?
+    return 'error' unless valid?
 
     display_reservation
   end
 
   private
 
+  attr_reader :user, :room_type, :date
+
   def display_reservation
     "#{room.name} reserved for #{date}. Price: #{price}"
   end
 
   def valid?
-    return false if user.nil? || room_type.nil? || date.nil? || room.nil? || user_type.nil?
-    return false unless reservable_date?
-
-    true
+    !room.nil? && reservable_date?
   end
 
   def reservable_date?
-    target_year = 2024
+    begin
+      Date.parse(date)
+    rescue Date::Error
+      return false
+    end
 
-    return false if month < 1 || month > 12 || day < 1 || day > 31
-
-    return year >= target_year
+    year >= TARGET_YEAR
   end
 
   def room
@@ -47,29 +51,29 @@ class ReservationSystem
   end
 
   def year
-    date[0..3].to_i
+    Date.parse(date).year
   end
 
   def month
-    date[5..6].to_i
+    Date.parse(date).month
   end
 
   def day
-    date[8..9].to_i
+    Date.parse(date).day
   end
 
-  def user_type
+  def user_type_prefix
     user[0]
   end
 
   def price
     base_price = room.base_price
 
-    if month == 8
+    if month == HIGH_SEASON_MONTH
       base_price *= room.aug_price_rate
     end
 
-    if user_type == 'G'
+    if user_type_prefix == GOLD_USER_PREFIX
       base_price *= room.g_user_price_rate
     end
 
