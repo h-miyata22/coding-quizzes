@@ -63,7 +63,7 @@ module Characters
 
     def consume_mp(skill:)
       cost = mp_cost(skill:)
-      @mp -= cost if @mp >= cost
+      @mp -= cost
     end
 
     def mp_cost(skill:)
