@@ -26,6 +26,8 @@ class SalesReport
   end
 
   def average(sales_data)
+    return 0 if sales_data.empty?
+
     total(sales_data) / sales_data.count
   end
 
@@ -47,6 +49,6 @@ class SalesReport
   end
 
   def vip_sales(sales_data)
-    total(sales_data.select { |data| data[:is_vip] })
+    total(sales_data.select { |data| data[:is_vip] == true })
   end
 end
